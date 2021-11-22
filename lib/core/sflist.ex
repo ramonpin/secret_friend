@@ -1,5 +1,4 @@
 defmodule SecretFriend.Core.SFList do
-
   def new, do: []
 
   def add_friend(sflist, new_friend), do: [new_friend | sflist]
@@ -10,6 +9,6 @@ defmodule SecretFriend.Core.SFList do
     |> gen_pairs()
   end
 
-  defp gen_pairs(sflist), do:
-    Enum.chunk_every(sflist, 2, 1, sflist)
+  defp gen_pairs(sflist),
+    do: Enum.chunk_every(sflist, 2, 1, sflist)
 end
