@@ -2,6 +2,8 @@ defmodule SFListTest do
   use ExUnit.Case
   alias SecretFriend.Core.SFList
 
+  doctest SFList
+
   test "SFList creation" do
     assert SFList.new() == []
   end
