@@ -1,18 +1,14 @@
 defmodule SecretFriend do
-  @moduledoc """
-  Documentation for `SecretFriend`.
-  """
+  use Application
 
-  @doc """
-  Hello world.
+  @impl Application
+  def start(_type, _args) do
+    children = [
+      {SecretFriend.Worker.SFWorker, :supervised}
+    ]
 
-  ## Examples
+    opts = [strategy: :one_for_one, name: SecretFriend.Supervisor]
 
-      iex> SecretFriend.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    Supervisor.start_link(children, opts)
   end
 end
