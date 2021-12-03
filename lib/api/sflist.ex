@@ -1,28 +1,21 @@
 defmodule SecretFriend.API.SFList do
   alias SecretFriend.Worker.SFWorker
 
-  def new(),
-    do: SFWorker.start()
-
-  def add_friend(pid, friend) do 
-    send(pid, {:cast, {:add_friend, friend}})
-    pid
+  def new(name) do 
+    SFWorker.start_link(name)
+    name
   end
 
-  def create_selection(pid) do
-    send(pid, {:call, self(), :create_selection})
-    handle_response()
+  def add_friend(name, friend) do 
+    GenServer.cast(name, {:add_friend, friend})
+    name
   end
 
-  def show(pid) do
-    send(pid, {:call, self(), :show})
-    handle_response()
+  def create_selection(name) do
+    GenServer.call(name, :create_selection)
   end
 
-  defp handle_response() do
-    receive do
-      {:response, response} -> response
-      _other -> nil
-    end
+  def show(name) do
+    GenServer.call(name, :show)
   end
 end
