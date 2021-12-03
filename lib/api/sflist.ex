@@ -7,8 +7,10 @@ defmodule SecretFriend.API.SFList do
   end
 
   def add_friend(name, friend) do 
-    GenServer.cast(name, {:add_friend, friend})
-    name
+    case GenServer.call(name, {:add_friend, friend}) do
+      :ok -> name
+      :locked -> :locked
+    end
   end
 
   def create_selection(name) do
@@ -17,5 +19,13 @@ defmodule SecretFriend.API.SFList do
 
   def show(name) do
     GenServer.call(name, :show)
+  end
+
+  def lock?(name) do
+    GenServer.call(name, :lock?)
+  end
+
+  def lock(name) do
+    GenServer.cast(name, :lock)
   end
 end

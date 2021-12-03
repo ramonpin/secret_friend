@@ -3,7 +3,7 @@ defmodule SecretFriend.Worker.SFWorker do
   alias SecretFriend.Core.SFList
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, {SFList.new(), nil}, name: name)
+    GenServer.start_link(__MODULE__, %{sflist: SFList.new(), selection: nil, lock: false}, name: name)
   end
 
   @impl GenServer
@@ -13,25 +13,40 @@ defmodule SecretFriend.Worker.SFWorker do
 
   # hadle_cast(msg, state) -> {:noreply, new_state}
   @impl GenServer
-  def handle_cast({:add_friend, friend}, {sflist, _selection} = _state) do
-    new_sflist = SFList.add_friend(sflist, friend)
-    {:noreply, {new_sflist, nil}}
+  def handle_cast(:lock, state) do
+    {:noreply, %{state | lock: true}}
   end
 
   # hadle_call(msg, from, state) -> {:reply, response, new_state}
   @impl GenServer
-  def handle_call(:create_selection, _from, {sflist, nil} = _state) do
-    new_selection = SFList.create_selection(sflist)
-    {:reply, new_selection, {sflist, new_selection}}
+  def handle_call({:add_friend, friend}, _from, %{sflist: sflist, lock: false} = state) do
+    new_sflist = SFList.add_friend(sflist, friend)
+    {:reply, :ok, %{state | sflist: new_sflist, selection: nil}}
   end
 
   @impl GenServer
-  def handle_call(:create_selection, _from, {_sflist, selection} = state) do
+  def handle_call({:add_friend, _friend}, _from, %{lock: true} = state) do
+    {:reply, :locked, state}
+  end
+
+  @impl GenServer
+  def handle_call(:create_selection, _from, %{sflist: sflist, selection: nil} = state) do
+    new_selection = SFList.create_selection(sflist)
+    {:reply, new_selection, %{state | selection: new_selection}}
+  end
+
+  @impl GenServer
+  def handle_call(:create_selection, _from, %{selection: selection} = state) do
     {:reply, selection, state}
   end
 
   @impl GenServer
-  def handle_call(:show, _from, {sflist, _selection} = state) do
+  def handle_call(:show, _from, %{sflist: sflist} = state) do
     {:reply, sflist, state}
+  end
+
+  @impl GenServer
+  def handle_call(:lock?, _from, %{lock: lock} = state) do
+    {:reply, lock, state}
   end
 end
