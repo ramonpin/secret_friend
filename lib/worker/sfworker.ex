@@ -7,14 +7,22 @@ defmodule SecretFriend.Worker.SFWorker do
   end
 
   @impl GenServer
-  def init(_name) do
-    {:ok, %{sflist: SFList.new(), selection: nil, lock: false}}
+  def init(name) do
+    case :ets.lookup(:sflist_cache, name) do
+      [] ->
+        {:ok, %{name: name, sflist: SFList.new(), selection: nil, lock: false}}
+      [{^name, state}] ->
+        {:ok, state}
+    end
   end
 
   # hadle_cast(msg, state) -> {:noreply, new_state}
   @impl GenServer
-  def handle_cast(:lock, state) do
-    {:noreply, %{state | lock: true}}
+  def handle_cast(:lock, %{name: name} = state) do
+    new_state = %{state | lock: true}
+
+    :ets.insert(:sflist_cache, {name, new_state})
+    {:noreply, new_state}
   end
 
   # hadle_call(msg, from, state) -> {:reply, response, new_state}
@@ -30,9 +38,12 @@ defmodule SecretFriend.Worker.SFWorker do
   end
 
   @impl GenServer
-  def handle_call(:create_selection, _from, %{sflist: sflist, selection: nil} = state) do
+  def handle_call(:create_selection, _from, %{name: name, sflist: sflist, selection: nil} = state) do
     new_selection = SFList.create_selection(sflist)
-    {:reply, new_selection, %{state | selection: new_selection}}
+    new_state = %{state | selection: new_selection}
+
+    :ets.insert(:sflist_cache, {name, new_state})
+    {:reply, new_selection, new_state} 
   end
 
   @impl GenServer
