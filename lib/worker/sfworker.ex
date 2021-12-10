@@ -3,12 +3,12 @@ defmodule SecretFriend.Worker.SFWorker do
   alias SecretFriend.Core.SFList
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, %{sflist: SFList.new(), selection: nil, lock: false}, name: name)
+    GenServer.start_link(__MODULE__,  name, name: name)
   end
 
   @impl GenServer
-  def init(state) do
-    {:ok, state}
+  def init(_name) do
+    {:ok, %{sflist: SFList.new(), selection: nil, lock: false}}
   end
 
   # hadle_cast(msg, state) -> {:noreply, new_state}

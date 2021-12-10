@@ -1,12 +1,12 @@
 defmodule SecretFriend.API.SFList do
-  alias SecretFriend.Worker.SFWorker
+  alias SecretFriend.Boundary.SFListsSupervisor
 
-  def new(name) do 
-    SFWorker.start_link(name)
+  def new(name) do
+    SFListsSupervisor.create_sflist(name)
     name
   end
 
-  def add_friend(name, friend) do 
+  def add_friend(name, friend) do
     case GenServer.call(name, {:add_friend, friend}) do
       :ok -> name
       :locked -> :locked
