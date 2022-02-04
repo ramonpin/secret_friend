@@ -1,9 +1,9 @@
 defmodule SecretFriend.API.User do
-  alias SecretFriend.Worker.UserWorker
+  alias SecretFriend.Boundary.UserSupervisor
   alias SecretFriend.API.SFList
 
   def new(name, nick) do
-    UserWorker.start_link({name, nick})
+    UserSupervisor.create_user(name, nick)
   end
 
   def sflists(nick) do

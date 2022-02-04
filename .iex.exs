@@ -1,9 +1,15 @@
 alias SecretFriend.API.SFList
+alias SecretFriend.API.User
 
-SFList.new(:arq)
-|> SFList.add_friend("Ramon")
-|> SFList.add_friend("Luis")
-|> SFList.add_friend("Maria")
+arq = SFList.new(:arq)
+
+juan = User.new("Juan", :juan)
+luis = User.new("Luis", :luis)
+maria = User.new("Maria", :maria)
+
+User.add_me_to(:juan, :arq)
+User.add_me_to(:luis, :arq)
+User.add_me_to(:maria, :arq)
 
 IO.inspect(SFList.show(:arq))
 IO.puts("Loaded...")

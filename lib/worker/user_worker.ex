@@ -8,7 +8,16 @@ defmodule SecretFriend.Worker.UserWorker do
 
   @impl GenServer
   def init({name, nick}) do
-    {:ok, User.new(name, nick)}
+    case :ets.lookup(:user_cache, nick) do
+      [] ->
+        new_user = User.new(name, nick)
+        :ets.insert(:user_cache, {nick, new_user})
+
+        {:ok, new_user}
+
+      [{^nick, user}] ->
+        {:ok, user}
+    end
   end
 
   @impl GenServer
@@ -24,10 +33,14 @@ defmodule SecretFriend.Worker.UserWorker do
   @impl GenServer
   def handle_cast({:add_me_to, sflist_name}, %{nick: nick, sflists: sflists} = user) do
     case SecretFriend.API.SFList.add_friend(sflist_name, nick) do
-      :locked -> 
+      :locked ->
         {:noreply, user}
+
       name ->
-        {:noreply, %{user | sflists: [name | sflists]}}
+        new_user = %{user | sflists: [name | sflists]}
+        :ets.insert(:user_cache, {nick, new_user})
+
+        {:noreply, new_user}
     end
   end
 end
