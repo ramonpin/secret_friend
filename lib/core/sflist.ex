@@ -6,7 +6,7 @@ defmodule SecretFriend.Core.SFList do
   @doc """
   Creates an empty secret friend list.
 
-      iex> sflist = SFList.new()
+      iex> SFList.new()
       []
   """
   def new, do: []
