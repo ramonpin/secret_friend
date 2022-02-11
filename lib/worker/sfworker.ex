@@ -2,8 +2,8 @@ defmodule SecretFriend.Worker.SFWorker do
   use GenServer
   alias SecretFriend.Core.SFList
 
-  def via(name), 
-    do: {:via, Registry, {SecretFriend.SFLRegistry, name}}
+  def via(process_name), 
+    do: {:via, Registry, {SecretFriend.SFLRegistry, process_name}}
 
   def start_link(name) do
     GenServer.start_link(__MODULE__,  name, name: via(name))

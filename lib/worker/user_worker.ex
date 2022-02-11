@@ -2,8 +2,11 @@ defmodule SecretFriend.Worker.UserWorker do
   use GenServer
   alias SecretFriend.Core.User
 
+  def via(process_name),
+    do: {:via, Registry, {SecretFriend.UserRegistry, process_name}}
+
   def start_link({_name, nick} = user_args) when is_atom(nick) do
-    GenServer.start_link(__MODULE__, user_args, name: nick)
+    GenServer.start_link(__MODULE__, user_args, name: via(nick))
   end
 
   @impl GenServer

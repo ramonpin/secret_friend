@@ -1,17 +1,18 @@
 defmodule SecretFriend.API.User do
   alias SecretFriend.Boundary.UserSupervisor
   alias SecretFriend.API.SFList
+  alias SecretFriend.Worker.UserWorker
 
   def new(name, nick) do
     UserSupervisor.create_user(name, nick)
   end
 
   def sflists(nick) do
-    GenServer.call(nick, :sflists)
+    GenServer.call(UserWorker.via(nick), :sflists)
   end
 
   def add_me_to(nick, sflist) do
-    GenServer.cast(nick, {:add_me_to, sflist})
+    GenServer.cast(UserWorker.via(nick), {:add_me_to, sflist})
   end
 
   def secret_friend(nick, sflist_name) do

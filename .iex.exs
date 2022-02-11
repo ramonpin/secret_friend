@@ -3,9 +3,9 @@ alias SecretFriend.API.User
 
 arq = SFList.new(:arq)
 
-juan = User.new("Juan", :juan)
-luis = User.new("Luis", :luis)
-maria = User.new("Maria", :maria)
+User.new("Juan", :juan)
+User.new("Luis", :luis)
+User.new("Maria", :maria)
 
 User.add_me_to(:juan, :arq)
 User.add_me_to(:luis, :arq)
