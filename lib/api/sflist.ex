@@ -1,5 +1,6 @@
 defmodule SecretFriend.API.SFList do
   alias SecretFriend.Boundary.SFListsSupervisor
+  alias SecretFriend.Worker.SFWorker
 
   def new(name) do
     SFListsSupervisor.create_sflist(name)
@@ -7,25 +8,25 @@ defmodule SecretFriend.API.SFList do
   end
 
   def add_friend(name, friend) do
-    case GenServer.call(name, {:add_friend, friend}) do
+    case GenServer.call(SFWorker.via(name), {:add_friend, friend}) do
       :ok -> name
       :locked -> :locked
     end
   end
 
   def create_selection(name) do
-    GenServer.call(name, :create_selection)
+    GenServer.call(SFWorker.via(name), :create_selection)
   end
 
   def show(name) do
-    GenServer.call(name, :show)
+    GenServer.call(SFWorker.via(name), :show)
   end
 
   def lock?(name) do
-    GenServer.call(name, :lock?)
+    GenServer.call(SFWorker.via(name), :lock?)
   end
 
   def lock(name) do
-    GenServer.cast(name, :lock)
+    GenServer.cast(SFWorker.via(name), :lock)
   end
 end

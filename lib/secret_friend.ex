@@ -5,7 +5,8 @@ defmodule SecretFriend do
   def start(_type, _args) do
     children = [
       {SecretFriend.Boundary.SFListsSupervisor, :noargs},
-      {SecretFriend.Boundary.UserSupervisor, :noargs}
+      {SecretFriend.Boundary.UserSupervisor, :noargs},
+      {Registry, keys: :unique, name: SecretFriend.SFLRegistry}
     ]
 
     opts = [strategy: :one_for_one, name: SecretFriend.Supervisor]
