@@ -1,0 +1,12 @@
+* ELixir Scripting
+
+This folder contains some scripting examples in Elixir. Both of them are samples
+of http requests to external APIs done with *HTTPoison* y *Poison*.
+
+** http-sample.exs
+
+How to make a robust call to an external API and how to parse JSON responses.
+
+** name-api.exs
+
+How to make several concurrent calls to external APIs and aggregate results.
