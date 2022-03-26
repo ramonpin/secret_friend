@@ -1,0 +1,20 @@
+* Secret Friend and other samples
+
+This repository contains several mini projects that we use to learn Elixir
+capabilities during our workshop sessions on friday's mornings.
+
+** Secret Friend
+
+This is our first example. We used it to learn basics of Elixir and OTP.
+
+** Elixir Scripting
+
+This was used to learn how we can use Elixir as a scripting language for
+simple tasks.
+
+** Name API
+
+In this project we implemented a simple HTTP API using Plug. Also was
+out test bed for asynchronous code and failure management using the *with*
+function. Also contains a struct definition in NameApi.Data.User module and
+a very simple example of metaprogramming with *__using__* and *defmacro*.
